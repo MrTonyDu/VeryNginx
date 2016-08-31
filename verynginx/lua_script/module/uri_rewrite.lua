@@ -28,6 +28,7 @@ function _M.run()
 
     for i, rule in ipairs( VeryNginxConfig.configs["uri_rewrite_rule"] ) do
         local enable = rule['enable']
+        local jump = rule['jump']
         local matcher = matcher_list[ rule['matcher'] ] 
         if enable == true and request_tester.test( matcher ) == true then
             replace_re = rule['replace_re']
@@ -38,7 +39,7 @@ function _M.run()
             end
 
             if new_uri ~= ngx_var_uri then
-                ngx_set_uri( new_uri , false )
+                ngx_set_uri( new_uri , jump )
             end
             return
         end
