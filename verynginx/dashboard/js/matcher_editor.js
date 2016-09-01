@@ -78,6 +78,33 @@ matcher_editor.form_meta = {
             ]
         }
     ],
+    'FILE':[
+        {
+            'group_name':'Value of FILE',
+            'input':[
+                {
+                    'title':'path',
+                    'name':'path',
+                    'type':'input',
+                },
+                {
+                    'title':'operator',
+                    'name':'operator',
+                    'type':"select",
+                    'options':{
+                        'Exists':"exists",
+                        'Not Exists':"not_exists"
+                    }
+
+                },
+                {
+                    'title':'value',
+                    'name':'value',
+                    'type':'input',
+                },
+            ]
+        }
+    ],
     'Host':[
         {
             'group_name':'Value of Host',
