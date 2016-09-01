@@ -59,4 +59,10 @@ function _M.get_request_args()
     return args
 end
 
+function _M.file_exists(path)
+    local file = io.open(path, "rb")
+    if file then file:close() end
+    return file ~= nil
+end
+
 return _M
