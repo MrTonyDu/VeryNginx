@@ -16,7 +16,7 @@ function _M.run()
         return
     end
     
-    local new_uri = nil 
+    local new_uri
     local re_gsub = ngx.re.gsub
     local ngx_var = ngx.var 
     local ngx_set_uri = ngx.req.set_uri
@@ -28,18 +28,25 @@ function _M.run()
 
     for i, rule in ipairs( VeryNginxConfig.configs["uri_rewrite_rule"] ) do
         local enable = rule['enable']
-        local jump = rule['jump']
         local matcher = matcher_list[ rule['matcher'] ] 
         if enable == true and request_tester.test( matcher ) == true then
-            replace_re = rule['replace_re']
+            if rule['break'] then
+                ngx.log(ngx.ERR, "rewrite break:" .. ngx_var_uri)
+                return
+            end
+
+            local replace_re = rule['replace_re']
             if replace_re ~= nil and string.len( replace_re ) >0 then
-                new_uri = re_gsub( ngx_var_uri, replace_re, rule['to_uri'] ) 
+                new_uri = re_gsub( ngx_var_uri, replace_re, rule['to_uri'] )
             else
                 new_uri = rule['to_uri']
             end
 
             if new_uri ~= ngx_var_uri then
-                ngx_set_uri( new_uri , jump )
+                ngx.log(ngx.ERR, "rewrite done:" .. ngx_var_uri .. " to " .. new_uri)
+                ngx_set_uri( new_uri , rule['jump'] )
+            else
+                ngx.log(ngx.ERR, "rewrite ignore:" .. ngx_var_uri .. " to " .. new_uri)
             end
             return
         end
