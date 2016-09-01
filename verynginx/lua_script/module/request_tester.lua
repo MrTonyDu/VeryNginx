@@ -7,7 +7,7 @@
 local cookie = require "cookie"
 local util = require "util"
 
-_M = {}
+local _M = {}
 
 local tester = {}
 
