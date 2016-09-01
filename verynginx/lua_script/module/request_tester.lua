@@ -5,6 +5,7 @@
 -- @Disc    : test a request hit a matcher or not
 
 local cookie = require "cookie"
+local util = require "util"
 
 _M = {}
 
@@ -90,6 +91,18 @@ end
 function _M.test_uri( condition )
     local uri = ngx.var.uri;
     return _M.test_var( condition['operator'], condition['value'], uri )
+end
+
+function _M.test_file( condition )
+    local path = condition['path'] .. ngx.var.uri
+    if condition['index'] then path = path .. "/" .. condition['index'] end
+    local exists = util.file_exists(path)
+    ngx.log(ngx.ERR, "test_file " .. path .. " " .. tostring(exists))
+    if condition['operator'] == 'exists' then
+        return exists
+    else
+        return not exists
+    end
 end
 
 function _M.test_ip( condition )
@@ -192,6 +205,7 @@ function _M.test_cookie( condition )
 end
 
 tester["URI"] = _M.test_uri
+tester["FILE"] = _M.test_file
 tester["IP"] = _M.test_ip
 tester["UserAgent"] = _M.test_ua
 tester["Method"] = _M.test_method
