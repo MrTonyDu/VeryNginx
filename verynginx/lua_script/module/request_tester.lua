@@ -185,7 +185,7 @@ function _M.test_args( condition )
 end
 
 function _M.test_host( condition )
-    local hostname = ngx.var.host
+    local hostname = ngx.var.http_host or ngx.var.host
     return _M.test_var( condition['operator'], condition['value'], hostname )
 end
 
